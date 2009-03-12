@@ -14,8 +14,7 @@ Start irccat somewhere, and invoke this script as follows:
 
 ### Examples ###
 
-./irccat-rss.py --feed http://search.twitter.com/search.atom?q=apple+event --channels \#appleevent --prefix "Mar 17 Event" &
-./irccat-rss.py --feed http://search.twitter.com/search.atom?q=apple+event --channels \#appleevent --prefix "Mar 17 Event" &
-./irccat-rss.py --feed http://arstechnica.com/rss/everything.xml --channels \#mychan --prefix "Everything Feed" -n /usr/bin/nc --port 12346 &
-./irccat-rss.py --feed http://arstechnica.com/rss/everything.xml --channels \#mychan,\#yourchan2,@joeschmoe
-./irccat-rss.py --feed http://arstechnica.com/rss/everything.xml --channels \#mychan --prefix "Everything Feed" -n /usr/bin/nc -o "-q0" --port 12346 &
+* `./irccat-rss.py --feed http://search.twitter.com/search.atom?q=apple+event --channels \#appleevent --prefix "Mar 17 Event" &`
+* `./irccat-rss.py --feed http://arstechnica.com/rss/everything.xml --channels \#mychan --prefix "Everything Feed" -n /usr/bin/nc --port 12346 &`
+* `./irccat-rss.py --feed http://arstechnica.com/rss/everything.xml --channels \#mychan,\#yourchan2,@joeschmoe`
+* `./irccat-rss.py --feed http://arstechnica.com/rss/everything.xml --channels \#mychan --prefix "Everything Feed" -n /usr/bin/nc -o "-q0" --port 12346 &`
