@@ -3,6 +3,16 @@
 import feedparser, time, sys, os, urllib, re
 from optparse import OptionParser
 
+def fmt_coveritlive(entry):
+  return "%s: %s" % (entry.title, entry.summary)
+def fmt_default(entry):
+  return "%s" % (entry.title,)
+
+fmtters = {
+  'coveritlive': fmt_coveritlive,
+  'default': fmt_default,
+}
+
 def break_up_message(s):
   s = s.split(' ')
   final = []
@@ -29,7 +39,7 @@ def printout(s, channels, host, port, ncbin, ncopts):
   # Popen doesn't let you pass unicode, so we'll take out some common stuff
   s = s.replace(u'\xa0', '')
   s = s.replace(u'\u2014', '--')
-
+  s = s.replace(u'&nbsp;', '')
   p = re.compile(r'<.*?>')
   s = p.sub('', s) # Remove tags
   
@@ -51,10 +61,11 @@ def printout(s, channels, host, port, ncbin, ncopts):
 def tinyurl(long_url):
   return urllib.urlopen('http://tinyurl.com/api-create.php?url=%s' % long_url).read()
   
-def main(feed, channels, prefix, host, port, ncbin, ncopts, element):
+def main(feed, channels, prefix, host, port, ncbin, ncopts, formatter):
   printout("Restarted, piping from %s to %s" % (feed, channels), channels, host, port, ncbin, ncopts)
   e = {}
   c = 0
+  fmtter = fmtters[formatter]
   d = feedparser.parse(feed)
   for entry in d['entries']:
     try:
@@ -87,9 +98,9 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts, element):
         except AttributeError:
           link = None
         if link:
-          printout(u"%s%s - %s" % (prefix, entry[element], tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
+          printout(u"%s%s - %s" % (prefix, fmtter(entry), tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
         else:
-          printout(u"%s%s" % (prefix, entry[element]), channels, host, port, ncbin, ncopts)
+          printout(u"%s%s" % (prefix, fmtter(entry)), channels, host, port, ncbin, ncopts)
       
 if __name__ == "__main__":
   parser = OptionParser()
@@ -107,10 +118,10 @@ if __name__ == "__main__":
                     dest="ncbin", default="/bin/netcat", help="Location and name of netcat binary")
   parser.add_option("-o", "--netcat-options",
                     dest="ncopts", default="", help="Additional options to send to netcat")
-  parser.add_option("-e", "--element",
-                    dest="element", default="title", help="The RSS element to pipe into the channel")
+  parser.add_option("-F", "--formatter",
+                    dest="formatter", default="default", help="The way you want your message formatted")
 
   (options, args) = parser.parse_args()
   if options.prefix != "":
     options.prefix = options.prefix + ": "
-  main(feed=options.feed,channels=options.channels,prefix=options.prefix,host=options.host,port=options.post,ncbin=options.ncbin,ncopts=options.ncopts,element=options.element)
+  main(feed=options.feed,channels=options.channels,prefix=options.prefix,host=options.host,port=options.post,ncbin=options.ncbin,ncopts=options.ncopts,formatter=options.formatter)
