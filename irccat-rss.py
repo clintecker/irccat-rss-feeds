@@ -9,8 +9,11 @@ def printout(s, channels, host, port, ncbin, ncopts):
   # Popen doesn't let you pass unicode, so we'll take out some common stuff
   s = s.replace(u'\xa0', '')
   s = s.replace(u'\u2014', '--')
-  s = unicode(s)
+
+  p = re.compile(r'<.*?>')
+  s = p.sub('', s) # Remove tags
   
+  s = unicode(s) # Make sure we're unicode I guess
   try:
     out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels, s, ncbin, ncopts, host, port)
     print out
