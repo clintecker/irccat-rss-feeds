@@ -16,7 +16,7 @@ def printout(s, channels, host, port, ncbin, ncopts):
 def tinyurl(long_url):
   return urllib.urlopen('http://tinyurl.com/api-create.php?url=%s' % long_url).read()
   
-def main(feed, channels, prefix, host, port, ncbin, ncopts):
+def main(feed, channels, prefix, host, port, ncbin, ncopts, element):
   printout("Restarted, piping from %s to %s" % (feed, channels), channels, host, port, ncbin, ncopts)
   e = {}
   c = 0
@@ -52,9 +52,9 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts):
         except AttributeError:
           link = None
         if link:
-          printout("%s%s - %s" % (prefix, entry.title, tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
+          printout("%s%s - %s" % (prefix, entry[element], tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
         else:
-          printout("%s%s" % (prefix, entry.title), channels, host, port, ncbin, ncopts)
+          printout("%s%s" % (prefix, entry[element]), channels, host, port, ncbin, ncopts)
       
 if __name__ == "__main__":
   parser = OptionParser()
@@ -72,9 +72,10 @@ if __name__ == "__main__":
                     dest="ncbin", default="/bin/netcat", help="Location and name of netcat binary")
   parser.add_option("-o", "--netcat-options",
                     dest="ncopts", default="", help="Additional options to send to netcat")
-  
+  parser.add_option("-e", "--element",
+                    dest="element", default="title", help="The RSS element to pipe into the channel")
 
   (options, args) = parser.parse_args()
   if options.prefix != "":
     options.prefix = options.prefix + ": "
-  main(feed=options.feed,channels=options.channels,prefix=options.prefix,host=options.host,port=options.post,ncbin=options.ncbin,ncopts=options.ncopts)
+  main(feed=options.feed,channels=options.channels,prefix=options.prefix,host=options.host,port=options.post,ncbin=options.ncbin,ncopts=options.ncopts,element=options.element)
