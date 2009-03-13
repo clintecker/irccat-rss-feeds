@@ -54,7 +54,6 @@ def printout(s, channels, host, port, ncbin, ncopts):
       o = os.popen(out).read()
       time.sleep(1)
   except:
-    raise
     print "Error sending output"
     return
     
@@ -91,7 +90,6 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts, formatter):
         except AttributeError:
           raise
       if guid not in e.keys():
-        c += 1
         e[guid] = entry
         try:
           link = entry.link
