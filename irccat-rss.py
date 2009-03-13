@@ -3,6 +3,26 @@
 import feedparser, time, sys, os, urllib, re
 from optparse import OptionParser
 
+def break_up_message(s):
+  s = s.split(' ')
+  final = []
+  i = 0
+  j = 0
+  while len(s):
+    t = ''
+    ta = []
+    for i in range(len(s)):
+      if(len(t+' '+s[i]) < 440):
+        t = t + ' ' + s[i]
+        ta.append(s[i])
+        j += 1
+      else:
+        break
+    final.append(" ".join(ta))
+    s = s[j:]
+    j = 0
+  return final
+
 def printout(s, channels, host, port, ncbin, ncopts):
   s = s.replace(u'"', u'\"')
   s = s.replace(u'\n', u' ')
@@ -14,10 +34,14 @@ def printout(s, channels, host, port, ncbin, ncopts):
   s = p.sub('', s) # Remove tags
   
   s = unicode(s) # Make sure we're unicode I guess
+  
+  messages = break_up_message(s)
+  
   try:
-    out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels, s, ncbin, ncopts, host, port)
-    print out
-    o = os.popen(out).read()
+    for s in messages:
+      out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels, s, ncbin, ncopts, host, port)
+      print out
+      o = os.popen(out).read()
   except:
     raise
     print "Error sending output"
