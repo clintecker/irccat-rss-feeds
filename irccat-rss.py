@@ -47,7 +47,14 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts):
       if guid not in e.keys():
         c += 1
         e[guid] = entry
-        printout("%s: %s - %s" % (prefix, entry.title, tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
+        try:
+          link = entry.link
+        except AttributeError:
+          link = None
+        if link:
+          printout("%s%s - %s" % (prefix, entry.title, tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
+        else:
+          printout("%s%s" % (prefix, entry.title), channels, host, port, ncbin, ncopts)
       
 if __name__ == "__main__":
   parser = OptionParser()
@@ -68,5 +75,6 @@ if __name__ == "__main__":
   
 
   (options, args) = parser.parse_args()
-  
+  if options.prefix != "":
+    options.prefix = options.prefix + ": "
   main(feed=options.feed,channels=options.channels,prefix=options.prefix,host=options.host,port=options.post,ncbin=options.ncbin,ncopts=options.ncopts)
