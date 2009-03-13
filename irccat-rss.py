@@ -22,16 +22,31 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts):
   c = 0
   d = feedparser.parse(feed)
   for entry in d['entries']:
-    if entry.guid not in e.keys():
+    try:
+      guid = entry.guid
+    except AttributeError:
+      try:
+        guid = entry.updated
+      except AttributeError:
+        raise
+    if guid not in e.keys():
       c += 1
-      e[entry.guid] = entry
+      e[guid] = entry
   printout('preloaded %s items' % (c,), channels, host, port, ncbin, ncopts)
   while 1:
     time.sleep(10)
     d = feedparser.parse(feed)
     for entry in d['entries']:
-      if entry.guid not in e.keys():
-        e[entry.guid] = entry
+      try:
+        guid = entry.guid
+      except AttributeError:
+        try:
+          guid = entry.updated
+        except AttributeError:
+          raise
+      if guid not in e.keys():
+        c += 1
+        e[guid] = entry
         printout("%s: %s - %s" % (prefix, entry.title, tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
       
 if __name__ == "__main__":
