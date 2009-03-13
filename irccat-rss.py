@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import feedparser, time, sys, os, urllib
 from optparse import OptionParser
 
@@ -6,10 +7,11 @@ def printout(s, channels, host, port, ncbin, ncopts):
   s = s.replace('"', '\"')
   s = s.replace('\n', ' ')
   try:
-    out = '/bin/echo "%s %s" | %s %s %s %s' % (channels,s, ncbin, ncopts, host, port)
+    out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels,s, ncbin, ncopts, host, port)
     print out
     o = os.popen(out).read()
   except:
+    raise
     print "Error sending output"
     return
     
@@ -52,9 +54,9 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts, element):
         except AttributeError:
           link = None
         if link:
-          printout("%s%s - %s" % (prefix, entry[element], tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
+          printout(u"%s%s - %s" % (prefix, entry[element], tinyurl(entry.link)), channels, host, port, ncbin, ncopts)
         else:
-          printout("%s%s" % (prefix, entry[element]), channels, host, port, ncbin, ncopts)
+          printout(u"%s%s" % (prefix, entry[element]), channels, host, port, ncbin, ncopts)
       
 if __name__ == "__main__":
   parser = OptionParser()
@@ -62,7 +64,7 @@ if __name__ == "__main__":
                     help="The URL of the RSS/Atom/XML Feed")
   parser.add_option("-c", "--channels",
                     dest="channels", default="#*", help="A channel or list of channels: #mychan or #mychan1,#mychan2,@joeblow")
-  parser.add_option("-p", "--prefix", default="",
+  parser.add_option("-p", "--prefix", default=u"",
                     dest="prefix", help="A descriptive string to print before the entry title")
   parser.add_option("-H", "--host",
                     dest="host", default="127.0.0.1", help="The hostname or IP address of the server running irccat bot")
