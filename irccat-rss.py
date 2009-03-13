@@ -7,8 +7,10 @@ def printout(s, channels, host, port, ncbin, ncopts):
   s = s.replace('\n', ' ')
   try:
     out = '/bin/echo "%s %s" | %s %s %s %s' % (channels,s, ncbin, ncopts, host, port)
+    print out
     o = os.popen(out).read()
   except:
+    print "Error sending output"
     return
     
 def tinyurl(long_url):
