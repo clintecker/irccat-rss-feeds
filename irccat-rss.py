@@ -42,6 +42,7 @@ def printout(s, channels, host, port, ncbin, ncopts):
       out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels, s, ncbin, ncopts, host, port)
       print out
       o = os.popen(out).read()
+      time.sleep(1)
   except:
     raise
     print "Error sending output"
@@ -68,7 +69,7 @@ def main(feed, channels, prefix, host, port, ncbin, ncopts, element):
       e[guid] = entry
   printout('preloaded %s items' % (c,), channels, host, port, ncbin, ncopts)
   while 1:
-    time.sleep(10)
+    time.sleep(4)
     d = feedparser.parse(feed)
     for entry in d['entries']:
       try:
