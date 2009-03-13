@@ -4,10 +4,15 @@ import feedparser, time, sys, os, urllib
 from optparse import OptionParser
 
 def printout(s, channels, host, port, ncbin, ncopts):
-  s = s.replace('"', '\"')
-  s = s.replace('\n', ' ')
+  s = s.replace(u'"', u'\"')
+  s = s.replace(u'\n', u' ')
+  # Popen doesn't let you pass unicode, so we'll take out some common stuff
+  s = s.replace(u'\xa0', '')
+  s = s.replace(u'\u2014', '--')
+  s = unicode(s)
+  
   try:
-    out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels,s, ncbin, ncopts, host, port)
+    out = u'/bin/echo "%s %s" | %s %s %s %s' % (channels, s, ncbin, ncopts, host, port)
     print out
     o = os.popen(out).read()
   except:
