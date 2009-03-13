@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import feedparser, time, sys, os, urllib
+import feedparser, time, sys, os, urllib, re
 from optparse import OptionParser
 
 def printout(s, channels, host, port, ncbin, ncopts):
